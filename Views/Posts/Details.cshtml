@@ -1,0 +1,24 @@
+@model Post
+<div class="row">
+    <div class="col-lg-8">
+        <div class="bg-white p-4 rounded">
+            <h1 class="h4 mb-4">@Model.PostName</h1>
+            @foreach(var postTag in Model.PostTags){
+            <a href="#" class="badge bg-danger bg-opacity-10 text-opacity-50 text-primary">@postTag.TagName</a>
+            }
+
+            <img src="~/img/@Model.PostImage" class="img-fluid rounded ">
+
+            <div>@Model.PostText</div>
+
+
+
+            
+        </div>
+    </div>
+    <div class="col-lg-4 ">
+                <vc:tags-menu></vc:tags-menu>
+                <div class="mt-3"></div>
+                <vc:new-posts></vc:new-posts>
+            </div>
+</div>

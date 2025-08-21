@@ -1,0 +1,11 @@
+@model List<Tag>
+    <div class="bg-white p-4 rounded">
+        <h2 class="h5 mb-4">Categories</h2>
+        <ul class="list-unstyled ">
+            @foreach(var tag in @Model)
+            {
+            <li><a  asp-route="posts_by_tag" asp-route-tag="@tag.TagUrl" class="text-decoration-none">@tag.TagName</a></li>
+            }
+        </ul>
+
+    </div>
