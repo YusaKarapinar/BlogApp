@@ -8,7 +8,7 @@ public class Comment
     [Key]
     public int CommentId { get; set; }
     public string? CommentText { get; set; }
-    public DateTime CommentPublishDate { get; set; }
+    public DateTime CommentDate { get; set; }
 
 
     public int UserId { get; set; }

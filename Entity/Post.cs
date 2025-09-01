@@ -12,7 +12,7 @@ public class Post
     public string? PostImage { get; set; }
     public DateTime PostPublishDate { get; set; }
     public bool PostIsActive { get; set; }
-    public string? PostUrl { get; set; }
+    public string PostUrl { get; set; } = null!;
 
     public ICollection<Comment> PostComments { get; set; } = new List<Comment>();
     public ICollection<Tag> PostTags { get; set; } = new List<Tag>();

@@ -10,15 +10,15 @@ namespace BlogApp.ViewComponents
     public class NewPosts : ViewComponent
     {
         private IPostRepository _postRepository;
-    public NewPosts(IPostRepository postRepository)
-    {
-        _postRepository = postRepository;
-    }
-    public async Task<IViewComponentResult> InvokeAsync()
-    {
+        public NewPosts(IPostRepository postRepository)
+        {
+            _postRepository = postRepository;
+        }
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
 
-        var posts = await _postRepository.GetSomePostsAsync();
-        return View(posts);
-    }
+            var posts = await _postRepository.GetSomePostsAsync();
+            return View(posts);
+        }
     }
 }

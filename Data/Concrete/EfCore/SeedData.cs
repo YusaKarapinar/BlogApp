@@ -18,12 +18,12 @@ public static class SeedData
             {
                 context.Tags.AddRange(
                     new Entity.Tag { TagName = "web programlama",
-                        TagUrl = "web-programlama" },
-                    new Entity.Tag { TagName = "c programlama", TagUrl = "c-programlama" },
+                        TagUrl = "web-programlama" , TagColor = Entity.TagColors.primary },
+                    new Entity.Tag { TagName = "c programlama", TagUrl = "c-programlama" ,TagColor = Entity.TagColors.success },
 
-                    new Entity.Tag { TagName = "php programlama", TagUrl ="php-programlama" },
+                    new Entity.Tag { TagName = "php programlama", TagUrl ="php-programlama" , TagColor = Entity.TagColors.info },
 
-                    new Entity.Tag { TagName = "backend programlama", TagUrl="backend-programlama" }
+                    new Entity.Tag { TagName = "backend programlama", TagUrl="backend-programlama" , TagColor = Entity.TagColors.warning }
 
                 );
                 context.SaveChanges();
@@ -31,10 +31,10 @@ public static class SeedData
             if (!context.Users.Any())
             {
                 context.Users.AddRange(
-                    new Entity.User { UserName = "Yusa" },
-                    new Entity.User { UserName = "nisa" },
-                    new Entity.User { UserName = "ali" },
-                    new Entity.User { UserName = "veli" }
+                    new Entity.User { UserName = "Yusa",UserImage="1.jpg" },
+                    new Entity.User { UserName = "nisa",UserImage="2.jpg" },
+                    new Entity.User { UserName = "ali",UserImage="1.jpg" },
+                    new Entity.User { UserName = "veli",UserImage="2.jpg" }
                     );
                 context.SaveChanges();
 
@@ -42,9 +42,12 @@ public static class SeedData
             if (!context.Posts.Any())
             {
                 context.Posts.AddRange(
-                    new Entity.Post{PostName="AspNetcore",PostText="AspNetCorePostTText",PostIsActive=true,PostPublishDate=DateTime.Now,PostTags=context.Tags.Take(3).ToList(),UserId=1,PostImage="1.jpg" , PostUrl="aspnetcore0"},
-                    new Entity.Post{PostName="php programlama",PostText="PhpProgramlamaPostText",PostIsActive=true,PostPublishDate=DateTime.Now,PostTags=context.Tags.Take(3).ToList(),UserId=1,PostImage="1.jpg" , PostUrl="php-programlama"},
-                    new Entity.Post{PostName="Django programlama",PostText="DjangoProgramlamaPostText",PostIsActive=true,PostPublishDate=DateTime.Now,PostTags=context.Tags.Take(3).ToList(),UserId=1,PostImage="1.jpg" , PostUrl="django-programlama"}
+                    new Entity.Post{PostName="AspNetcore",PostText="AspNetCorePostTText",PostIsActive=true,PostPublishDate=DateTime.Now,PostTags=context.Tags.Take(3).ToList(),UserId=1,PostImage="1.jpg" , PostUrl="aspnetcore0",PostComments= new List<Entity.Comment>{ new Entity.Comment{CommentText="aspnetcore comment 1",CommentDate=DateTime.Now,UserId=2},new Entity.Comment{CommentText="aspnetcore comment 2",CommentDate=DateTime.Now,UserId=3} }},
+
+                    new Entity.Post { PostName = "php programlama", PostText = "PhpProgramlamaPostText", PostIsActive = true, PostPublishDate = DateTime.Now, PostTags = context.Tags.Take(3).ToList(), UserId = 1, PostImage = "1.jpg", PostUrl = "php-programlama", PostComments = new List<Entity.Comment> { new Entity.Comment { CommentText = "php programlama comment 1", CommentDate = DateTime.Now, UserId = 2 } } },
+                    
+
+                    new Entity.Post { PostName = "Django programlama", PostText = "DjangoProgramlamaPostText", PostIsActive = true, PostPublishDate = DateTime.Now, PostTags = context.Tags.Take(3).ToList(), UserId = 1, PostImage = "1.jpg", PostUrl = "django-programlama", PostComments = new List<Entity.Comment> { new Entity.Comment { CommentText = "django programlama comment 1", CommentDate = DateTime.Now, UserId = 2 } } }
                 );
                 
                 context.SaveChanges();

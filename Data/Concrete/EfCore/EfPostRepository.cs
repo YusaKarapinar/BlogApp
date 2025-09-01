@@ -32,7 +32,16 @@ namespace BlogApp.Data.Concrete.EfCore
 
             return await _context.Posts.OrderByDescending(p => p.PostPublishDate).Skip(skip * 5).Take(count).ToListAsync();
         }
-       
-        
+
+        public async Task AddCommentAsync(int PostId, Comment comment)
+        {
+            var post = await _context.Posts.Include(p => p.PostComments).FirstOrDefaultAsync(p => p.PostId == PostId);
+            if (post != null)
+            {
+                  comment.PostId = post.PostId;
+                post.PostComments.Add(comment);
+                await _context.SaveChangesAsync();   
+            }
+        }
     }
 }

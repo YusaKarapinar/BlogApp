@@ -13,12 +13,14 @@
                         <h5 class="card-title">@post.PostName</h5>
                         @foreach(var tag in post.PostTags)
                         {
-                        <a href="#" class="badge bg-danger bg-opacity-10 text-opacity-50 text-primary">@tag.TagName</a>
+                        <a asp-route="posts_by_tag" asp-route-tag="@tag.TagUrl"
+                            class="badge bg-@(tag.TagColor?.ToString().ToLower() ?? "secondary") bg-opacity-50  text-dark">@tag.TagName</a>
 
                         }
                         <p class="card-text">@post.PostText</p>
 
-                        <a asp-route="post_details" asp-route-url="@post.PostUrl" class="btn btn-primary position-absolute bottom-0 end-0 m-3">Read More</a>
+                        <a asp-route="post_details"  asp-route-url="@post.PostUrl"
+                            class="btn btn-primary position-absolute bottom-0 end-0 m-3">Read More</a>
                     </div>
                 </div>
             </div>

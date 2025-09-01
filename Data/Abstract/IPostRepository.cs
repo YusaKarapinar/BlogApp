@@ -12,5 +12,6 @@ namespace BlogApp.Data.Abstract
 
         void CreatePost(Post post);
         public Task<List<Post>> GetSomePostsAsync(int count = 5, int skip = 0);
+        public Task AddCommentAsync(int PostId, Comment comment);
     }
 }
