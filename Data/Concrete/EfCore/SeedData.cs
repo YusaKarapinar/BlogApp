@@ -31,10 +31,10 @@ public static class SeedData
             if (!context.Users.Any())
             {
                 context.Users.AddRange(
-                    new Entity.User { UserName = "Yusa",UserImage="1.jpg" },
-                    new Entity.User { UserName = "nisa",UserImage="2.jpg" },
-                    new Entity.User { UserName = "ali",UserImage="1.jpg" },
-                    new Entity.User { UserName = "veli",UserImage="2.jpg" }
+                    new Entity.User { UserName = "Yusa",UserImage="1.jpg", Name="Yusuf",Surname="Kara",Email="nisa5403@gmail.com", Password="123456" },
+                    new Entity.User { UserName = "nisa",UserImage="2.jpg", Name="Nisa",Surname="Yılmaz",Email="nisa5403@gmail.com", Password="123456" },
+                    new Entity.User { UserName = "ali",UserImage="1.jpg", Name="Ali",Surname="Demir",Email="ali@gmail.com", Password="123456" },
+                    new Entity.User { UserName = "veli",UserImage="2.jpg", Name="Veli",Surname="Çelik",Email="veli@gmail.com", Password="123456" }
                     );
                 context.SaveChanges();
 

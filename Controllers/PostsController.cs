@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using BlogApp.Data.Abstract;
 using BlogApp.Data.Concrete.EfCore;
 using BlogApp.Entity;
@@ -14,10 +15,15 @@ public class PostsController : Controller
 {
     private IPostRepository _postRepository;
     private ITagRepository _tagRepository;
-    public PostsController(IPostRepository postRepository, ITagRepository tagRepository)
+    private ICommentRepository _commentRepository;
+    private IUserRepository _userRepository;
+
+    public PostsController(IPostRepository postRepository, ITagRepository tagRepository, ICommentRepository commentRepository, IUserRepository userRepository)
     {
         _postRepository = postRepository;
         _tagRepository = tagRepository;
+        _commentRepository = commentRepository;
+        _userRepository = userRepository;
     }
 
 
@@ -60,19 +66,43 @@ public class PostsController : Controller
         .FirstOrDefaultAsync(p => p.PostUrl == url)
 
         );
-        
-        
+
+
     }
     [HttpPost]
-    public async Task<IActionResult> Comment(int PostId, string url, [Bind("CommentText")]Comment comment)
+    public async Task<JsonResult> AddComment(int PostId, [Bind("CommentText")] Comment comment)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            User? user = null; 
+
+        if (int.TryParse(userId, out int id))
+        {
+            user = await _userRepository.Users
+                .FirstOrDefaultAsync(u => u.UserId == id);
+        }
+
+        if (user == null)
+        {
+            return Json(new { error = "Kullanıcı bulunamadı" });
+        }
+        comment.User = user;
+
         if (comment.CommentText != null)
         {
             comment.CommentDate = DateTime.UtcNow;
-            comment.UserId = 1; // TODO: Giriş yapan kullanıcı ID'si gelecek
-            await _postRepository.AddCommentAsync(PostId, comment);
-            return RedirectToAction("Details", new { url = url });
+            comment.UserId = comment.User.UserId;
+            await _commentRepository.AddCommentAsync(PostId, comment);
+            return Json(new
+            {
+                comment.User.UserName,
+                comment.CommentDate,
+                comment.CommentText,
+                comment.User.UserImage
+
+            });
         }
-        return NotFound();
+        return Json(new { error = "Text Boş bulunamadı" });
+
+
     }
 }

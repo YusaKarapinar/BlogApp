@@ -22,17 +22,17 @@
                     
                     <div class="card-body">
                         <h5>Yorum ekle</h5>
-                        <form asp-action="Comment" method="post">
-                            <input type="hidden" name="PostId" value="@Model.PostId" />
-                            <input type="hidden" name="url" value="@Model.PostUrl" />
+                        <form asp-controller="Posts" asp-action="AddComment" method="post">
+                            <input type="hidden" name="PostId" id ="PostId" value="@Model.PostId" />
+                           
                             <div class="mb-3">
                                 <label for="CommentText" class="form-label">Yorum</label>
                                 <textarea id="CommentText" name="CommentText" class="form-control" rows="3"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Gönder</button>
+                            <button id ="btnYorumKayit" type="submit" class="btn btn-primary">Gönder</button>
                         </form>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" id="commentsList">
                         @foreach (var comment in Model.PostComments)
                         {
                         <img src="~/img/@(@comment.User.UserImage ?? " default.png")" alt="@comment.User.UserName"
@@ -56,3 +56,49 @@
         <vc:new-posts></vc:new-posts>
     </div>
 </div>
+
+@section Scripts{ 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnYorumKayit").click(function (e) {
+            e.preventDefault(); // Formun normal gönderilmesini engelle
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AddComment","Posts")',
+                dataType: 'json',
+                data: {
+                    PostId: $("#PostId").val(),
+                    CommentText: $("#CommentText").val()
+                },
+                success: function (response) {
+                    if (response.error) {
+                        alert(response.error);
+                    } else {
+                        // Yeni yorumu sayfa yenilenmeden ekle
+                        let newComment = `
+                            <div class="d-flex mb-3">
+                                <img src="/img/${response.userImage ?? "default.png"}" 
+                                     alt="${response.userName}" 
+                                     class="avatar rounded-circle me-3" width="50" height="50">
+                                <div>
+                                    <h6>${response.userName}</h6>
+                                    <span class="text-muted small">${new Date(response.commentDate).toLocaleDateString()}</span>
+                                    <p>${response.commentText}</p>
+                                </div>
+                            </div>`;
+                        $("#commentsList").prepend(newComment);
+                        $("#CommentText").val(""); // textarea'yı temizle
+                    }
+                }
+            });
+
+            return false; // orijinal davranışla aynı
+        });
+    });
+</script>
+
+}

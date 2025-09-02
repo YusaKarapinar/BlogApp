@@ -1,0 +1,58 @@
+@model BlogApp.Entity.User
+
+@section Styles {
+<link rel="stylesheet" href="~/css/Profile.css" />
+}
+
+<div class="profile">
+    <img src="~/img/@Model.UserImage" alt="User Image" class="avatar" />
+    <h2>@Model.UserName</h2>
+    <p class="email">@Model.Email</p>
+
+    <p><b>Ad:</b> @Model.Name</p>
+    <p><b>Soyad:</b> @Model.Surname</p>
+
+    <div class="actions">
+        <a class="btn edit text-white" asp-controller="User" asp-action="Edit" asp-route-id="@Model.UserId">Profili
+            Düzenle</a>
+        <a class="btn logout text-white" asp-controller="User" asp-action="Logout">Çıkış Yap</a>
+    </div>
+</div>
+<div class="content-split">
+    <div class="posts">
+        <h3>Gönderilerim</h3>
+        @if (Model.UserPosts != null && Model.UserPosts.Any()){
+        <ul>
+            @foreach (var post in Model.UserPosts)
+            {
+            <li><a asp-route="post_details"  asp-route-url="@post.PostUrl">@post.PostName</a></li>
+            }
+
+        </ul>
+        } else
+        {
+        <p>Henüz gönderi yok.</p>
+        }
+
+    </div>
+    <div class="comments">
+        <h3>Yorumlarım</h3>
+        @if (Model.UserComments != null && Model.UserComments.Any())
+        {
+        <ul>
+            @foreach (var comment in Model.UserComments)
+            {
+            <a asp-route="post_details"  asp-route-url="@comment.Post.PostUrl" asp-route-id="@comment.Post.PostId">@comment.Post.PostName</a>
+            <li>
+                @comment.CommentText <br />
+                <small>@comment.CommentDate.ToShortDateString()</small>
+            </li>
+            }
+        </ul>
+        }
+        else
+        {
+        <p>Henüz yorum yok.</p>
+        }
+    </div>
+</div>
