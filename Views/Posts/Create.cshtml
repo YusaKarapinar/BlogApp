@@ -1,0 +1,46 @@
+@model CreateViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm p-4">
+                <h2 class="mb-4">Create New Post</h2>
+
+                <form asp-action="Create" asp-controller="Posts" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="PostName" class="form-label"></label>
+                        <input asp-for="PostName" class="form-control" />
+                        <span asp-validation-for="PostName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PostText" class="form-label"></label>
+                        <textarea asp-for="PostText" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="PostText" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PostImage" class="form-label">Post Image</label>
+                        <input asp-for="PostImage" type="file" class="form-control" />
+                        <span asp-validation-for="PostImage" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Select Tags</label>
+                        <select asp-for="PostTags" class="form-control" multiple="multiple">
+                            @foreach (var tag in ViewBag.Tags)
+                            {
+                                <option value="@tag.TagName">@tag.TagName</option>
+                            }
+                        </select>
+                        <small class="form-text text-muted">Ctrl veya Cmd ile birden fazla tag seçebilirsiniz.</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Create Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

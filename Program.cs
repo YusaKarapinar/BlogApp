@@ -10,9 +10,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<BlogContext>(options =>
 {
-    var config = builder.Configuration;
-    var connectionString = config.GetConnectionString("sql_connection");
-    options.UseSqlite(connectionString);
+        var config = builder.Configuration;
+        var connectionString = config.GetConnectionString("sql_connection");
+        options.UseSqlite(connectionString);
 });
 
 
@@ -41,6 +41,12 @@ app.MapControllerRoute(
         name: "posts_by_tag",
         pattern: "post/tag/{tag}", defaults: new { controller = "Posts", action = "Index" }
                        );
+app.MapControllerRoute(
+    name: "user_profile",
+    pattern: "User/Profile/{userUrl}",
+    defaults: new { controller = "User", action = "Profile" }
+);
+
 
 app.MapControllerRoute(
         name: "default",

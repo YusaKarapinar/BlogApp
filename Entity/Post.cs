@@ -9,10 +9,10 @@ public class Post
     public int PostId { get; set; }
     public string? PostName { get; set; }
     public string? PostText { get; set; }
-    public string? PostImage { get; set; }
+    public string? PostImage { get; set; } = "defaultPostImage.jpg";
     public DateTime PostPublishDate { get; set; }
-    public bool PostIsActive { get; set; }
-    public string PostUrl { get; set; } = null!;
+    public bool PostIsActive { get; set; } = true;
+    public string? PostUrl { get; set; } = null!;
 
     public ICollection<Comment> PostComments { get; set; } = new List<Comment>();
     public ICollection<Tag> PostTags { get; set; } = new List<Tag>();

@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using BlogApp.Data.Abstract;
 using BlogApp.Entity;
+using BlogApp.Models;
+using System.Security.Claims;
 
 namespace BlogApp.Data.Concrete.EfCore
 {
@@ -33,7 +35,27 @@ namespace BlogApp.Data.Concrete.EfCore
             return await _context.Posts.OrderByDescending(p => p.PostPublishDate).Skip(skip * 5).Take(count).ToListAsync();
         }
 
-       
-       
+        public async Task<Post> AddPostAsync(CreateViewModel model, int userId)
+        {
+            var newPost = new Post
+            {
+                PostName = model.PostName,
+                PostText = model.PostText,
+                PostImage = model.PostImage,
+                PostTags = model.SelectedTagIds.Select(tagId => new Tag
+                {
+                    TagId = tagId
+                }).ToList(),
+                PostUrl = model.PostName?.ToLowerInvariant().Replace(" ", "-") + "-" + Guid.NewGuid(),
+                PostPublishDate = DateTime.UtcNow,
+                PostIsActive = true,
+                UserId = userId
+            };
+
+            await _context.Posts.AddAsync(newPost);
+            await _context.SaveChangesAsync();
+            return newPost;
+        }
+
     }
 }

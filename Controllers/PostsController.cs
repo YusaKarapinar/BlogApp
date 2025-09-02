@@ -73,7 +73,7 @@ public class PostsController : Controller
     public async Task<JsonResult> AddComment(int PostId, [Bind("CommentText")] Comment comment)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            User? user = null; 
+        User? user = null;
 
         if (int.TryParse(userId, out int id))
         {
@@ -102,7 +102,38 @@ public class PostsController : Controller
             });
         }
         return Json(new { error = "Text Boş bulunamadı" });
+    }
 
 
+    public IActionResult Create()
+    {
+        ViewBag.Tags = _tagRepository.Tags.ToList();
+
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            return View();
+        }
+        return RedirectToAction("Login", "User");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateViewModel model)
+    {
+        ViewBag.Tags = _tagRepository.Tags.ToList();
+
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
+        {
+            await _postRepository.AddPostAsync(model, userId);
+        }
+        else
+        {
+            ModelState.AddModelError("", "UserId bulunamadı");
+            return View(model);
+        }
+        return RedirectToAction("Index", "Posts");
     }
 }

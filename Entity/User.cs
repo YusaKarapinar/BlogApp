@@ -8,10 +8,12 @@ public class User
     [Key]
     public int UserId { get; set; }
     public string? UserName { get; set; }
-    public string? UserImage { get; set; }= "default.png";
+    public string? UserImage { get; set; }= "defaultProfilePicture.png";
+    
+    public string? UserUrl { get; set; } = null!;
 
 
-    public  string? Name { get; set; }
+    public string? Name { get; set; }
     public string? Surname { get; set; }
 
     public string? Email { get; set; }

@@ -34,4 +34,6 @@ public class SignupViewModel
     [Display(Name = "Surname")]
     public string? Surname { get; set; }
 
+    public IFormFile? UserImage { get; set; }
+
 }

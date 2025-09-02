@@ -31,7 +31,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto align-items-center">
           <li class="nav-item">
-            <a class="nav-link mx-2" href="#!"><i class="fas fa-plus-circle pe-2"></i>Post</a>
+            <a class="nav-link mx-2" asp-controller="Posts" asp-action="Create"><i class="fas fa-plus-circle pe-2"></i>Post</a>
           </li>
           <li class="nav-item">
             <a class="nav-link mx-2" href="#!"><i class="fas fa-bell pe-2"></i>Alerts</a>
@@ -41,7 +41,7 @@
           </li>
           <li class="nav-item ms-3">
             @if(User?.Identity != null && User.Identity.IsAuthenticated){
-              <a class="btn btn-dark btn-rounded" asp-controller="User" asp-action="Profile">@User.Identity.Name</a>
+              <a class="btn btn-dark btn-rounded" asp-controller="User" asp-action="Profile" asp-route-userUrl="@User.FindFirst("UserUrl")?.Value">@User.Identity.Name</a>
               <a class="btn btn-dark btn-rounded" asp-controller="User" asp-action="Logout">Sign out</a>
             }
             else{

@@ -32,6 +32,7 @@ public class UserController : Controller
             userClaims.Add(new Claim(ClaimTypes.NameIdentifier, isUser.UserId.ToString()));
             userClaims.Add(new Claim(ClaimTypes.Name, isUser.UserName ?? ""));
             userClaims.Add(new Claim("UserImage", isUser.UserImage ?? ""));
+            userClaims.Add(new Claim("UserUrl", isUser.UserUrl ?? ""));
             var userIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new Microsoft.AspNetCore.Authentication.AuthenticationProperties
             {
@@ -82,22 +83,30 @@ public class UserController : Controller
     }
 
 
-    public IActionResult Profile()
+    public IActionResult Profile(string userUrl)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null)
+        if (string.IsNullOrEmpty(userUrl))
+            return NotFound();
+
+        var user = _userRepository.Users
+                    .Include(u => u.UserPosts)
+                    .Include(u => u.UserComments)
+                        .ThenInclude(c => c.Post)
+                    .FirstOrDefault(u => u.UserUrl == userUrl);
+
+        if (user == null)
+            return NotFound();
+
+        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (currentUserId == null && user.UserUrl == userUrl)
         {
             return RedirectToAction("Login");
         }
 
-        var user = _userRepository.Users.Include(u => u.UserPosts).Include(u => u.UserComments).ThenInclude(c => c.Post).FirstOrDefault(u => u.UserId.ToString() == userId);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
         return View(user);
     }
+
+
 
     public async Task<IActionResult> Logout()
     {
@@ -127,7 +136,7 @@ public class UserController : Controller
             return View(model);
         }
 
-       
+
 
         await _userRepository.AddUserAsync(model);
         await SigninWithEmailAndPassword(model.Email, model.Password);
