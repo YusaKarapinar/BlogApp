@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogApp.Entity;
+using BlogApp.Models;
 
 namespace BlogApp.Data.Abstract
 {
@@ -10,7 +11,8 @@ namespace BlogApp.Data.Abstract
     {
         public IQueryable<User> Users { get; }
 
-        public void CreateUser(User user);
+        public Task AddUserAsync(SignupViewModel model);
+
 
 
     }

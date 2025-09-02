@@ -22,21 +22,10 @@ public class UserController : Controller
     {
         _userRepository = userRepository;
     }
-    public IActionResult Login()
+    public async Task<string> SigninWithEmailAndPassword(string? email, string? password)
     {
 
-        return View();
-    }
-    [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model)
-    {
-        if (!ModelState.IsValid)
-        {
-
-            return View(model);
-        }
-
-        var isUser = await _userRepository.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+        var isUser = await _userRepository.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
         if (isUser != null)
         {
             var userClaims = new List<Claim>();
@@ -52,10 +41,39 @@ public class UserController : Controller
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(userIdentity), authProperties);
+            return "success";
+        }
+
+        return "failure";
+    }
+
+
+
+    public IActionResult Login()
+    {
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Profile", "User");
+        }
+
+        return View();
+    }
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+
+            return View(model);
+        }
+        var result = await SigninWithEmailAndPassword(model.Email, model.Password);
+
+        if (result == "success")
+        {
             return RedirectToAction("Index", "Posts");
 
         }
-        else
+        else if (result == "failure")
         {
             ModelState.AddModelError("", "Geçersiz giriş");
         }
@@ -84,6 +102,38 @@ public class UserController : Controller
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Index", "Posts");
+    }
+    public IActionResult Signup()
+    {
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Profile", "User");
+        }
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Signup(SignupViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        if (_userRepository.Users.Any(u => u.Email == model.Email))
+        {
+            ModelState.AddModelError("", "Bu email zaten kayıtlı");
+            return View(model);
+        }
+
+       
+
+        await _userRepository.AddUserAsync(model);
+        await SigninWithEmailAndPassword(model.Email, model.Password);
+
+
+
         return RedirectToAction("Index", "Posts");
     }
 
