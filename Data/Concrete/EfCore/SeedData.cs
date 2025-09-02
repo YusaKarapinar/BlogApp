@@ -1,64 +1,111 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using BlogApp.Entity;
+using Microsoft.AspNetCore.Builder;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace BlogApp.Data.Concrete.EfCore;
-
-public static class SeedData
+namespace BlogApp.Data.Concrete.EfCore
 {
-    public static void TestVerileriniDoldur(IApplicationBuilder app)
+    public static class SeedData
     {
-        var context = app.ApplicationServices.CreateScope().ServiceProvider.GetService<BlogContext>();
-        if (context != null)
+        public static void TestVerileriniDoldur(IApplicationBuilder app)
         {
+            using var scope = app.ApplicationServices.CreateScope();
+            var context = scope.ServiceProvider.GetService<BlogContext>();
+            if (context == null) return;
+
+            // Migrations varsa uygula
             if (context.Database.GetPendingMigrations().Any())
-            {
                 context.Database.Migrate();
-            }
+
+            // Tags
             if (!context.Tags.Any())
             {
-                context.Tags.AddRange(
-                    new Entity.Tag { TagName = "web programlama",
-                        TagUrl = "web-programlama" , TagColor = Entity.TagColors.primary },
-                    new Entity.Tag { TagName = "c programlama", TagUrl = "c-programlama" ,TagColor = Entity.TagColors.success },
-
-                    new Entity.Tag { TagName = "php programlama", TagUrl ="php-programlama" , TagColor = Entity.TagColors.info },
-
-                    new Entity.Tag { TagName = "backend programlama", TagUrl="backend-programlama" , TagColor = Entity.TagColors.warning }
-
-                );
+                var tags = new List<Tag>
+                {
+                    new Tag { TagName = "Web Development", TagUrl = "web-development", TagColor = TagColors.primary },
+                    new Tag { TagName = "C#", TagUrl = "c-sharp", TagColor = TagColors.success },
+                    new Tag { TagName = "PHP", TagUrl ="php", TagColor = TagColors.info },
+                    new Tag { TagName = "Backend", TagUrl="backend", TagColor = TagColors.warning },
+                    new Tag { TagName = "Frontend", TagUrl="frontend", TagColor = TagColors.danger }
+                };
+                context.Tags.AddRange(tags);
                 context.SaveChanges();
             }
+
+            // Users
             if (!context.Users.Any())
             {
-                context.Users.AddRange(
-                    new Entity.User { UserName = "Yusa",UserImage="1.jpg", Name="Yusuf",Surname="Kara",Email="nisa5403@gmail.com", Password="123456", UserUrl="yusuf-kara"},
-                    new Entity.User { UserName = "nisa",UserImage="2.jpg", Name="Nisa",Surname="Yılmaz",Email="nisa5403@gmail.com", Password="123456", UserUrl="nisa-yilmaz" },
-                    new Entity.User { UserName = "ali",UserImage="1.jpg", Name="Ali",Surname="Demir",Email="ali@gmail.com", Password="123456", UserUrl="ali-demir" },
-                    new Entity.User { UserName = "veli",UserImage="2.jpg", Name="Veli",Surname="Çelik",Email="veli@gmail.com", Password="123456", UserUrl="veli-celik" }
-                    );
+                var users = new List<User>
+                {
+                    new User { UserName = "yusufk", UserImage = "1.jpg", Name = "Yusuf", Surname = "Kara", Email = "yusuf@example.com", Password = "123456", UserUrl="yusuf-kara" },
+                    new User { UserName = "nisay", UserImage = "2.jpg", Name = "Nisa", Surname = "Yılmaz", Email = "nisa@example.com", Password = "123456", UserUrl="nisa-yilmaz" },
+                    new User { UserName = "aliD", UserImage = "3.jpg", Name = "Ali", Surname = "Demir", Email = "ali@example.com", Password = "123456", UserUrl="ali-demir" },
+                    new User { UserName = "veliC", UserImage = "4.jpg", Name = "Veli", Surname = "Çelik", Email = "veli@example.com", Password = "123456", UserUrl="veli-celik" }
+                };
+                context.Users.AddRange(users);
                 context.SaveChanges();
-
             }
+
+            // Posts
             if (!context.Posts.Any())
             {
-                context.Posts.AddRange(
-                    new Entity.Post{PostName="AspNetcore",PostText="AspNetCorePostTText",PostIsActive=true,PostPublishDate=DateTime.Now,PostTags=context.Tags.Take(3).ToList(),UserId=1,PostImage="1.jpg" , PostUrl="aspnetcore0",PostComments= new List<Entity.Comment>{ new Entity.Comment{CommentText="aspnetcore comment 1",CommentDate=DateTime.Now,UserId=2},new Entity.Comment{CommentText="aspnetcore comment 2",CommentDate=DateTime.Now,UserId=3} }},
+                var tagsList = context.Tags.Take(3).ToList();
 
-                    new Entity.Post { PostName = "php programlama", PostText = "PhpProgramlamaPostText", PostIsActive = true, PostPublishDate = DateTime.Now, PostTags = context.Tags.Take(3).ToList(), UserId = 1, PostImage = "1.jpg", PostUrl = "php-programlama", PostComments = new List<Entity.Comment> { new Entity.Comment { CommentText = "php programlama comment 1", CommentDate = DateTime.Now, UserId = 2 } } },
-                    
+                var posts = new List<Post>
+                {
+                    new Post
+                    {
+                        PostName = "Introduction to ASP.NET Core",
+                        PostText = "Learn the basics of ASP.NET Core and build your first web application.",
+                        PostIsActive = true,
+                        PostPublishDate = DateTime.Now.AddDays(-10),
+                        PostTags = tagsList,
+                        UserId = 1,
+                        PostImage = "aspnetcore.jpg",
+                        PostUrl = "introduction-to-aspnet-core",
+                        PostComments = new List<Comment>
+                        {
+                            new Comment { CommentText = "Great tutorial!", CommentDate = DateTime.Now.AddDays(-9), UserId = 2 },
+                            new Comment { CommentText = "Very helpful, thanks!", CommentDate = DateTime.Now.AddDays(-8), UserId = 3 }
+                        }
+                    },
+                    new Post
+                    {
+                        PostName = "PHP for Beginners",
+                        PostText = "This post covers the basics of PHP programming for new developers.",
+                        PostIsActive = true,
+                        PostPublishDate = DateTime.Now.AddDays(-7),
+                        PostTags = tagsList,
+                        UserId = 2,
+                        PostImage = "php.jpg",
+                        PostUrl = "php-for-beginners",
+                        PostComments = new List<Comment>
+                        {
+                            new Comment { CommentText = "Nice introduction.", CommentDate = DateTime.Now.AddDays(-6), UserId = 1 }
+                        }
+                    },
+                    new Post
+                    {
+                        PostName = "Getting Started with Django",
+                        PostText = "A beginner-friendly guide to creating web applications with Django.",
+                        PostIsActive = true,
+                        PostPublishDate = DateTime.Now.AddDays(-5),
+                        PostTags = tagsList,
+                        UserId = 3,
+                        PostImage = "django.jpg",
+                        PostUrl = "getting-started-with-django",
+                        PostComments = new List<Comment>
+                        {
+                            new Comment { CommentText = "Thanks for the guide!", CommentDate = DateTime.Now.AddDays(-4), UserId = 2 }
+                        }
+                    }
+                };
 
-                    new Entity.Post { PostName = "Django programlama", PostText = "DjangoProgramlamaPostText", PostIsActive = true, PostPublishDate = DateTime.Now, PostTags = context.Tags.Take(3).ToList(), UserId = 1, PostImage = "1.jpg", PostUrl = "django-programlama", PostComments = new List<Entity.Comment> { new Entity.Comment { CommentText = "django programlama comment 1", CommentDate = DateTime.Now, UserId = 2 } } }
-                );
-                
+                context.Posts.AddRange(posts);
                 context.SaveChanges();
-
-
-
             }
         }
     }
-
-
-
-
 }

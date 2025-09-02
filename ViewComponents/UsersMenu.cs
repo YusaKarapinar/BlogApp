@@ -25,7 +25,8 @@ public class UsersMenu:ViewComponent
                 UserName = u.UserName,
                 Name = u.Name,
                 PostCount = u.UserPosts.Count,
-                CommentCount = u.UserComments.Count
+                CommentCount = u.UserComments.Count,
+                UserUrl = u.UserUrl
             })
             .ToListAsync();
         return View(users);

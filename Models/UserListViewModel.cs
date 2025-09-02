@@ -10,4 +10,5 @@ public class UserListItemViewModel
     public string? Name { get; set; }
     public int PostCount { get; set; }
     public int CommentCount { get; set; }
+    public string? UserUrl { get; set; }
 }
