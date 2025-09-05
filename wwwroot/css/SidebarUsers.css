@@ -1,0 +1,41 @@
+.users-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.users-title {
+    font-weight: 600;
+    color: #343a40;
+}
+
+.user-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.1s;
+}
+
+.user-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+    transform: translateX(2px);
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.table-hover > tbody > tr:hover {
+    background-color: rgba(0,0,0,0.08);
+}
+
+@media (max-width: 768px) {
+    .users-card {
+        margin-bottom: 15px;
+    }
+}

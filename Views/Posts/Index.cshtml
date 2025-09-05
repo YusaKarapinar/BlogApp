@@ -1,51 +1,70 @@
 @model PostViewModel
+
 <div class="row">
+    <!-- Main Content -->
     <div class="col-lg-8">
         <div class="bg-white p-4 rounded">
             <h1 class="h4 mb-4">Popular Posts</h1>
-            @foreach(var post in @Model.Posts){
-            <div class="card">
-                <div class="row">
-                    <div class="col-4">
-                        <img src="~/img/@post.PostImage" class="img-fluid rounded">
-                    </div>
-                    <div class="col-8">
-                        <h5 class="card-title">@post.PostName</h5>
-                        @foreach(var tag in post.PostTags)
-                        {
-                        <a asp-route="posts_by_tag" asp-route-tag="@tag.TagUrl"
-                            class="badge bg-@(tag.TagColor?.ToString().ToLower() ?? "secondary") bg-opacity-50  text-dark">@tag.TagName</a>
 
-                        }
-                        <p class="card-text">@post.PostText</p>
+            @foreach(var post in Model.Posts)
+            {
+                <div class="card mb-4 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-4">
+                            <img src="~/img/@(string.IsNullOrEmpty(post.PostImage) ? "defaultPostImage.jpg" : post.PostImage)" 
+                                 class="img-fluid rounded-start" alt="@post.PostName">
+                        </div>
+                        <div class="col-8 position-relative">
+                            <div class="card-body">
+                                <h5 class="card-title">@post.PostName</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">@post.PostPublishDate.ToString("dd MMMM yyyy")</h6>
+                                <p class="mb-2">
+                                    Author: 
+                                    @if(post.User != null)
+                                    { 
+                                        <a asp-route="user_profile" asp-route-userUrl="@post.User.UserUrl">@post.User.UserName</a> 
+                                    } 
+                                    else 
+                                    { 
+                                        <span class="text-muted">Unknown</span> 
+                                    }
+                                </p>
 
-                        <a asp-route="post_details"  asp-route-url="@post.PostUrl"
-                            class="btn btn-primary position-absolute bottom-0 end-0 m-3">Read More</a>
+                                @foreach(var tag in post.PostTags)
+                                {
+                                    <a asp-route="posts_by_tag" asp-route-tag="@tag.TagUrl"
+                                       class="badge bg-@(tag.TagColor?.ToString().ToLower() ?? "secondary") bg-opacity-50 text-dark me-1">
+                                       @tag.TagName
+                                    </a>
+                                }
+
+                                <p class="card-text mt-2">@post.PostText</p>
+
+                                <a asp-route="post_details" asp-route-url="@post.PostUrl"
+                                   class="btn btn-primary position-absolute bottom-0 end-0 m-3">Read More</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="mt-3"></div>
             }
-            <div class="my-3"></div>
-            <nav>
-                <ul class="pagination">
-                    <li class="page-item">
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
                     <li class="page-item"><a href="#" class="page-link">1</a></li>
                     <li class="page-item"><a href="#" class="page-link">2</a></li>
                     <li class="page-item"><a href="#" class="page-link">3</a></li>
-                    </li>
                 </ul>
             </nav>
-            </h1>
         </div>
     </div>
 
-    <div class="col-lg-4 ">
+    <!-- Sidebar -->
+    <div class="col-lg-4">
         <vc:tags-menu></vc:tags-menu>
         <div class="mt-3"></div>
         <vc:new-posts></vc:new-posts>
         <div class="mt-3"></div>
         <vc:users-menu></vc:users-menu>
     </div>
-    
 </div>

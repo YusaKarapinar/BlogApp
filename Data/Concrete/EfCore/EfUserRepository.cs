@@ -54,5 +54,34 @@ namespace BlogApp.Data.Concrete.EfCore
             await _context.SaveChangesAsync();
         }
 
+        public Task DeleteUserAsync(User user)
+        {
+            _context.Users.Remove(user);
+            return _context.SaveChangesAsync();
+        }
+
+        
+
+        public Task UpdateUserAsync(User user, EditProfileViewModel model)
+        {
+            
+            user.UserName = model.UserName;
+            user.Name = model.Name;
+            user.Surname = model.Surname;
+            if (model.UserImage != null && model.UserImage.Length > 0)
+            {
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img");
+                var imageName = Guid.NewGuid() + Path.GetExtension(model.UserImage.FileName);
+                var filePath = Path.Combine(uploads, imageName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.UserImage.CopyTo(fileStream);
+                }
+                user.UserImage = imageName;
+            }
+
+            return _context.SaveChangesAsync();
+        }
     }
+    
 }

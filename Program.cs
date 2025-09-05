@@ -37,6 +37,12 @@ app.MapControllerRoute(
         name: "post_details",
         pattern: "post/details/{url}", defaults: new { controller = "Posts", action = "Details" }
                        );
+
+app.MapControllerRoute(
+        name: "post_edit",
+        pattern: "post/edit/{url}", defaults: new { controller = "Posts", action = "Edit" }
+    );
+
 app.MapControllerRoute(
         name: "posts_by_tag",
         pattern: "post/tag/{tag}", defaults: new { controller = "Posts", action = "Index" }

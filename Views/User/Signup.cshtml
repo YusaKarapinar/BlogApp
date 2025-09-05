@@ -3,7 +3,7 @@
 <div class="container mt-5 bg-white rounded p-4">
     <h2>Sign Up</h2>
     <form asp-controller="User" asp-action="Signup" method="post" enctype="multipart/form-data">
-        <div asp-validation-summary="All" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="mb-3">
             <label asp-for="UserName"></label>
             <input asp-for="UserName" class="form-control" />

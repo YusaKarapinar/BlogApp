@@ -1,11 +1,19 @@
 @model List<Tag>
-    <div class="bg-white p-4 rounded">
-        <h2 class="h5 mb-4">Categories</h2>
-        <ul class="list-unstyled ">
-            @foreach(var tag in @Model)
-            {
-            <li><a  asp-route="posts_by_tag" asp-route-tag="@tag.TagUrl" class="text-decoration-none">@tag.TagName</a></li>
-            }
-        </ul>
 
-    </div>
+    
+@section Styles {
+    <link rel="stylesheet" href="~/css/SidebarTags.css" />
+}
+<div class="tags-card bg-white p-4 rounded shadow-sm">
+    <h2 class="tags-title h5 mb-3">Categories</h2>
+    <ul class="list-unstyled tags-list">
+        @foreach(var tag in Model)
+        {
+            <li class="mb-2">
+                <a asp-route="posts_by_tag" asp-route-tag="@tag.TagUrl" class="tag-link">
+                    @tag.TagName
+                </a>
+            </li>
+        }
+    </ul>
+</div>

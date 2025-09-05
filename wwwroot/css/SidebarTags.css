@@ -1,0 +1,33 @@
+.tags-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.tags-title {
+    font-weight: 600;
+    color: #343a40;
+}
+
+.tags-list li {
+    list-style: none;
+}
+
+.tag-link {
+    color: #17a2b8; /* soft cyan */
+    text-decoration: none;
+    transition: color 0.2s, transform 0.1s;
+}
+
+.tag-link:hover {
+    color: #138496;
+    text-decoration: underline;
+    transform: translateX(2px);
+}
+
+@media (max-width: 768px) {
+    .tags-card {
+        margin-bottom: 15px;
+    }
+}

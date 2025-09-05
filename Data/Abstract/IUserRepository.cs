@@ -14,6 +14,8 @@ namespace BlogApp.Data.Abstract
         public Task AddUserAsync(SignupViewModel model);
 
 
+        public Task UpdateUserAsync(User user, EditProfileViewModel model);
+        public Task DeleteUserAsync(User user);
 
     }
 }

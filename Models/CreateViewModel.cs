@@ -16,7 +16,10 @@ public class CreateViewModel
     public string? PostText { get; set; }
 
     [Display(Name = "Post Image")]
-    public string? PostImage { get; set; }  // Resim adı veya URL
+    public string? PostImage { get; set; }  
+
+    [Display(Name = "Post Image")]
+    public IFormFile? PostImageFile { get; set; } 
 
     [Display(Name = "Select Tags")]
     public List<int> SelectedTagIds { get; set; } = new List<int>(); // Seçilen taglerin Id’leri

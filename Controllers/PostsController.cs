@@ -44,7 +44,7 @@ public class PostsController : Controller
         var tags = _tagRepository.Tags.ToList();
         PostViewModel postViewModel = new PostViewModel
         {
-            Posts = posts.Include(p => p.PostTags).ToList(),
+            Posts = posts.Include(p => p.PostTags).Include(p => p.User).ToList(),
             Tags = tags
         };
 
@@ -57,18 +57,32 @@ public class PostsController : Controller
         {
             return NotFound();
         }
+        var post = await _postRepository
+            .Posts
+            .Include(p => p.PostTags)
+            .Include(p => p.PostComments)
+            .ThenInclude(c => c.User)
+            .FirstOrDefaultAsync(p => p.PostUrl == url);
 
-        return View(await _postRepository
-        .Posts
-        .Include(p => p.PostTags)
-        .Include(p => p.PostComments)
-        .ThenInclude(c => c.User)
-        .FirstOrDefaultAsync(p => p.PostUrl == url)
+        if (post == null)
+        {
+            return NotFound();
+        }
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdStr != null && post.UserId == int.Parse(userIdStr))
+        {
+            ViewBag.IsOwner = true;
+        }
+        else
+        {
+            ViewBag.IsOwner = false;
+        }
 
-        );
+        return View(post);
 
 
     }
+
     [HttpPost]
     public async Task<JsonResult> AddComment(int PostId, [Bind("CommentText")] Comment comment)
     {
@@ -127,6 +141,31 @@ public class PostsController : Controller
         }
         if (int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId))
         {
+            string? fileName = null;
+
+            // Resim kaydetme
+            if (model.PostImageFile != null && model.PostImageFile.Length > 0)
+            {
+                // wwwroot/img klasörünü hazırla
+                string uploadPath = Path.Combine("wwwroot", "img");
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+
+                // Benzersiz isim
+                fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.PostImageFile.FileName);
+                string filePath = Path.Combine(uploadPath, fileName);
+                model.PostImage = fileName;
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.PostImageFile.CopyToAsync(stream);
+                }
+            }
+
+
+
             await _postRepository.AddPostAsync(model, userId);
         }
         else
@@ -134,6 +173,124 @@ public class PostsController : Controller
             ModelState.AddModelError("", "UserId bulunamadı");
             return View(model);
         }
+        return RedirectToAction("Index", "Posts");
+    }
+
+    public async Task<IActionResult> Edit(string url)
+    {
+        var post = await _postRepository.Posts
+            .Include(p => p.PostTags)
+            .FirstOrDefaultAsync(p => p.PostUrl == url);
+
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdStr == null || post.UserId != int.Parse(userIdStr))
+        {
+            return Forbid();
+        }
+
+        var model = new CreateViewModel
+        {
+            PostName = post.PostName,
+            PostText = post.PostText,
+            PostImage = post.PostImage,
+            SelectedTagIds = post.PostTags.Select(t => t.TagId).ToList()
+        };
+
+        ViewBag.Tags = _tagRepository.Tags.ToList();
+
+        return View(model);
+    }
+    [HttpPost]
+    public async Task<IActionResult> Edit(string url, CreateViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Tags = _tagRepository.Tags.ToList();
+            return View(model);
+        }
+        var post = await _postRepository.Posts
+            .Include(p => p.PostTags)
+            .FirstOrDefaultAsync(p => p.PostUrl == url);
+        if (post == null)
+        {
+            return NotFound();
+        }
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdStr == null || post.UserId != int.Parse(userIdStr))
+        {
+            return Forbid();
+        }
+        if (model.PostImageFile != null && model.PostImageFile.Length > 0)
+        {
+            // wwwroot/img klasörünü hazırla
+            string uploadPath = Path.Combine("wwwroot", "img");
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            // Benzersiz isim
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.PostImageFile.FileName);
+            string filePath = Path.Combine(uploadPath, fileName);
+            model.PostImage = fileName; // Yeni dosya adını modele ata
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.PostImageFile.CopyToAsync(stream);
+            }
+        }
+
+
+
+        await _postRepository.EditPostAsync(post, model);
+        return RedirectToAction("Details", new { url = post.PostUrl });
+
+
+    }
+
+
+
+    public async Task<IActionResult> Delete(string url)
+    {
+        var post = await _postRepository.Posts
+            .FirstOrDefaultAsync(p => p.PostUrl == url);
+
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdStr == null || post.UserId != int.Parse(userIdStr))
+        {
+            return Forbid();
+        }
+
+        return View(post);
+    }
+    [HttpPost]
+    public async Task<IActionResult> DeleteConfirmed( int PostId)
+    {
+        var post = await _postRepository.Posts
+            .FirstOrDefaultAsync(p => p.PostId == PostId);
+
+        if (post == null)
+        {
+            return NotFound();
+        }
+
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userIdStr == null || post.UserId != int.Parse(userIdStr))
+        {
+            return Forbid();
+        }
+
+        await _postRepository.DeletePostAsync(post);
         return RedirectToAction("Index", "Posts");
     }
 }

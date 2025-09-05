@@ -1,13 +1,20 @@
 @model List<Post>
 
 
-    <div class="bg-white p-4 rounded">
-        <h2 class="h5 mb-4">New Posts</h2>
-        <ul class="list-unstyled ">
-            @foreach(var post in @Model)
-            {
-            <li><a asp-route="post_details" asp-route-url="@post.PostUrl" class="text-decoration-none">@post.PostName</a></li>
-            }
-        </ul>
+@section Styles {
+    <link rel="stylesheet" href="~/css/SidebarPosts.css" />
+}
 
-    </div>
+<div class="new-posts-card bg-white p-4 rounded shadow-sm">
+    <h2 class="new-posts-title h5 mb-3">New Posts</h2>
+    <ul class="list-unstyled new-posts-list">
+        @foreach(var post in Model)
+        {
+            <li class="mb-2">
+                <a asp-route="post_details" asp-route-url="@post.PostUrl" class="new-post-link">
+                    @post.PostName
+                </a>
+            </li>
+        }
+    </ul>
+</div>

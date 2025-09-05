@@ -146,9 +146,99 @@ public class UserController : Controller
         return RedirectToAction("Index", "Posts");
     }
 
+    public async Task<IActionResult> Edit()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "User");
+        }
 
+        if (!int.TryParse(userId, out int id))
+        {
+            return RedirectToAction("Login", "User");
+        }
 
+        var user = await _userRepository.Users.FirstOrDefaultAsync(u => u.UserId == id);
+        if (user == null)
+        {
+            return RedirectToAction("Login", "User");
+        }
 
+        var model = new EditProfileViewModel
+        {
+            UserName = user.UserName,
+            Name = user.Name,
+            Surname = user.Surname,
+        };
 
+        return View(model);
+    }
 
+    [HttpPost]
+    public async Task<IActionResult> Edit(EditProfileViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "User");
+        }
+
+        if (!int.TryParse(userId, out int id))
+        {
+            return RedirectToAction("Login", "User");
+        }
+
+        var user = await _userRepository.Users.FirstOrDefaultAsync(u => u.UserId == id);
+        if (user == null)
+        {
+            return RedirectToAction("Login", "User");
+        }
+
+        await _userRepository.UpdateUserAsync(user, model);
+
+        return RedirectToAction("Profile", new { userUrl = user.UserUrl });
+    }
+
+    public async Task<IActionResult> Delete()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return RedirectToAction("Login", "User");
+        }
+
+        if (!int.TryParse(userId, out int id))
+        {
+            return RedirectToAction("Login", "User");
+        }
+
+        var user = await _userRepository.Users.FirstOrDefaultAsync(u => u.UserId == id);
+        if (user == null)
+        {
+            return RedirectToAction("Login", "User");
+        }
+
+        return View(user);
+    }
+    [HttpPost]
+    public async Task<IActionResult> DeleteConfirmed(int userId)
+    {
+        var user = await _userRepository.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+        if (user == null)
+        {
+            return RedirectToAction("Login", "User");
+        }
+
+        
+        await _userRepository.DeleteUserAsync(user);
+
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Index", "Posts");
+    }
 }

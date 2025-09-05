@@ -20,7 +20,7 @@ public class UsersMenu:ViewComponent
          var users = await _userRepository.Users
             .Include(u => u.UserPosts)
             .Include(u => u.UserComments)
-            .Select(u => new UserListItemViewModel
+            .Select(u => new UserListViewModel
             {
                 UserName = u.UserName,
                 Name = u.Name,

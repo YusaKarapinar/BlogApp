@@ -42,10 +42,9 @@ namespace BlogApp.Data.Concrete.EfCore
                 PostName = model.PostName,
                 PostText = model.PostText,
                 PostImage = model.PostImage,
-                PostTags = model.SelectedTagIds.Select(tagId => new Tag
-                {
-                    TagId = tagId
-                }).ToList(),
+                PostTags = _context.Tags
+                .Where(t => model.SelectedTagIds.Contains(t.TagId))
+                .ToList(),
                 PostUrl = model.PostName?.ToLowerInvariant().Replace(" ", "-") + "-" + Guid.NewGuid(),
                 PostPublishDate = DateTime.UtcNow,
                 PostIsActive = true,
@@ -57,5 +56,26 @@ namespace BlogApp.Data.Concrete.EfCore
             return newPost;
         }
 
+        public async Task<Post> EditPostAsync(Post post, CreateViewModel model)
+        {
+            post.PostName = model.PostName;
+            post.PostText = model.PostText;
+            if (model.PostImage != null)
+            {
+                post.PostImage = model.PostImage;
+            }
+            post.PostTags = _context.Tags
+                .Where(t => model.SelectedTagIds.Contains(t.TagId))
+                .ToList();
+
+            await _context.SaveChangesAsync();
+            return post;
+        }
+
+        public Task DeletePostAsync(Post post)
+        {
+            _context.Posts.Remove(post);
+            return _context.SaveChangesAsync();
+        }
     }
 }

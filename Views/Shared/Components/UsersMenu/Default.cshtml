@@ -1,31 +1,37 @@
-@model List<UserListItemViewModel>
+@model List<UserListViewModel>
+    
+@section Styles {
+    <link rel="stylesheet" href="~/css/SidebarUsers.css" />
+}
 
-<div class="bg-white p-4 rounded">
-    <h2 class="h5 mb-4">Users</h2>
+<div class="users-card bg-white p-4 rounded shadow-sm">
+    <h2 class="users-title h5 mb-3">Users</h2>
 
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Posts</th>
-                <th>Comments</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var user in Model)
-            {
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle mb-0">
+            <thead class="table-light">
                 <tr>
-                    <td>
-                        <a asp-route="user_profile"  asp-route-userUrl="@user.UserUrl" class="text-decoration-none">
-                            @user.Name
-                        </a>
-                    </td>
-                    <td>@user.UserName</td>
-                    <td>@user.PostCount</td>
-                    <td>@user.CommentCount</td>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Posts</th>
+                    <th>Comments</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach(var user in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-route="user_profile" asp-route-userUrl="@user.UserUrl" class="user-link">
+                                @user.Name
+                            </a>
+                        </td>
+                        <td>@user.UserName</td> 
+                        <td>@user.PostCount</td>
+                        <td>@user.CommentCount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

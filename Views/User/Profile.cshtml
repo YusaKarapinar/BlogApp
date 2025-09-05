@@ -1,58 +1,84 @@
 @model BlogApp.Entity.User
 
 @section Styles {
-<link rel="stylesheet" href="~/css/Profile.css" />
+    <link rel="stylesheet" href="~/css/Profile.css" />
 }
 
-<div class="profile">
-    <img src="~/img/@Model.UserImage" alt="User Image" class="avatar" />
-    <h2>@Model.UserName</h2>
-    <p class="email">@Model.Email</p>
+<div class="profile-section">
+    <div class="profile-card">
+        <img src="~/img/@(string.IsNullOrEmpty(Model.UserImage) ? "defaultUserImage.jpg" : Model.UserImage)" 
+             alt="User Image" class="avatar" />
+        <h2>@Model.UserName</h2>
+        <p class="email">@Model.Email</p>
 
-    <p><b>Ad:</b> @Model.Name</p>
-    <p><b>Soyad:</b> @Model.Surname</p>
+        <div class="profile-names">
+            <span><strong>First Name:</strong> @Model.Name</span>
+            <span><strong>Last Name:</strong> @Model.Surname</span>
+        </div>
+        @if(User.Identity != null && User.Identity.IsAuthenticated && User.FindFirst("UserUrl")?.Value == Model.UserUrl)
+        {
+             <div class="profile-actions">
+            <a class="btn edit" asp-controller="User" asp-action="Edit" asp-route-id="@Model.UserId">Edit Profile</a>
+            <a class="btn delete" asp-controller="User" asp-action="Delete" asp-route-id="@Model.UserId">Delete Profile</a>
+            <a class="btn logout" asp-controller="User" asp-action="Logout">Logout</a>
+        </div>
+        }
 
-    <div class="actions">
-        <a class="btn edit text-white" asp-controller="User" asp-action="Edit" asp-route-id="@Model.UserId">Profili
-            Düzenle</a>
-        <a class="btn logout text-white" asp-controller="User" asp-action="Logout">Çıkış Yap</a>
+       
     </div>
-</div>
-<div class="content-split">
-    <div class="posts">
-        <h3>Gönderilerim</h3>
-        @if (Model.UserPosts != null && Model.UserPosts.Any()){
-        <ul>
-            @foreach (var post in Model.UserPosts)
-            {
-            <li><a asp-route="post_details"  asp-route-url="@post.PostUrl">@post.PostName</a></li>
-            }
 
-        </ul>
-        } else
-        {
-        <p>Henüz gönderi yok.</p>
-        }
-
-    </div>
-    <div class="comments">
-        <h3>Yorumlarım</h3>
-        @if (Model.UserComments != null && Model.UserComments.Any())
-        {
-        <ul>
-            @foreach (var comment in Model.UserComments)
+    <div class="content-split">
+        <div class="posts">
+            <h3>My Posts</h3>
+            @if (Model.UserPosts != null && Model.UserPosts.Any())
             {
-            <a asp-route="post_details"  asp-route-url="@comment.Post.PostUrl" asp-route-id="@comment.Post.PostId">@comment.Post.PostName</a>
-            <li>
-                @comment.CommentText <br />
-                <small>@comment.CommentDate.ToShortDateString()</small>
-            </li>
+                <ul>
+                    @foreach (var post in Model.UserPosts)
+                    {
+                        <li>
+                            <div class="post-title">
+                                <a asp-route="post_details" asp-route-url="@post.PostUrl">@post.PostName</a>
+                            </div>
+                            @if(User.Identity != null && User.Identity.IsAuthenticated && User.FindFirst("UserUrl")?.Value == Model.UserUrl)
+                            {
+                                <div class="post-actions">
+                                    <a asp-route="post_edit" asp-route-url="@post.PostUrl" class="edit-link">Edit</a>
+                                    <a asp-controller="Posts" asp-action="Delete" asp-route-url="@post.PostUrl" class="delete-link">Delete</a>
+                                </div>
+                            }
+                        </li>
+                    }
+                </ul>
             }
-        </ul>
-        }
-        else
-        {
-        <p>Henüz yorum yok.</p>
-        }
+            else
+            {
+                <p>No posts yet.</p>
+            }
+        </div>
+
+        <div class="comments">
+            <h3>My Comments</h3>
+            @if (Model.UserComments != null && Model.UserComments.Any())
+            {
+                <ul>
+                    @foreach (var comment in Model.UserComments)
+                    {
+                        <li>
+                            <div class="comment-post">
+                                <a asp-route="post_details" asp-route-url="@comment.Post.PostUrl" asp-route-id="@comment.Post.PostId">
+                                    @comment.Post.PostName
+                                </a>
+                            </div>
+                            <div class="comment-text">@comment.CommentText</div>
+                            <small class="comment-date">@comment.CommentDate.ToShortDateString()</small>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No comments yet.</p>
+            }
+        </div>
     </div>
 </div>

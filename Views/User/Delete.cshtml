@@ -1,0 +1,25 @@
+@model User
+
+@{
+    ViewData["Title"] = "Delete Confirmation";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4 text-center">
+                <h3 class="mb-4">Are you sure you want to delete?</h3>
+                <p class="mb-4">You are about to delete the user “@Model.UserName”. This action cannot be undone.</p>
+
+                <div class="d-flex justify-content-around">
+                    <form asp-action="DeleteConfirmed" asp-controller="User" method="post">
+                        <input type="hidden" asp-for="UserId" />
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    </form>
+
+                    <a asp-action="Index" asp-controller="Posts" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -39,10 +39,10 @@ namespace BlogApp.Data.Concrete.EfCore
             {
                 var users = new List<User>
                 {
-                    new User { UserName = "yusufk", UserImage = "1.jpg", Name = "Yusuf", Surname = "Kara", Email = "yusuf@example.com", Password = "123456", UserUrl="yusuf-kara" },
-                    new User { UserName = "nisay", UserImage = "2.jpg", Name = "Nisa", Surname = "Yılmaz", Email = "nisa@example.com", Password = "123456", UserUrl="nisa-yilmaz" },
-                    new User { UserName = "aliD", UserImage = "3.jpg", Name = "Ali", Surname = "Demir", Email = "ali@example.com", Password = "123456", UserUrl="ali-demir" },
-                    new User { UserName = "veliC", UserImage = "4.jpg", Name = "Veli", Surname = "Çelik", Email = "veli@example.com", Password = "123456", UserUrl="veli-celik" }
+                    new User { UserName = "yusufk", Name = "Yusuf", Surname = "Kara", Email = "yusuf@example.com", Password = "123456", UserUrl="yusuf-kara" },
+                    new User { UserName = "nisay", Name = "Nisa", Surname = "Yılmaz", Email = "nisa@example.com", Password = "123456", UserUrl="nisa-yilmaz" },
+                    new User { UserName = "aliD", Name = "Ali", Surname = "Demir", Email = "ali@example.com", Password = "123456", UserUrl="ali-demir" },
+                    new User { UserName = "veliC", Name = "Veli", Surname = "Çelik", Email = "veli@example.com", Password = "123456", UserUrl="veli-celik" }
                 };
                 context.Users.AddRange(users);
                 context.SaveChanges();

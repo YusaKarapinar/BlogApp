@@ -1,0 +1,115 @@
+/* Genel post kartı */
+.post-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+}
+
+/* Başlık */
+.post-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #343a40;
+}
+
+/* Tag badge */
+.post-tags .badge {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+/* Post resmi */
+.post-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* Post metni */
+.post-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #495057;
+}
+
+/* Comments Section */
+.comments-section {
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.comments-header h4 {
+    font-weight: 600;
+    color: #007bff;
+}
+
+/* Add Comment Form */
+.add-comment h5 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.add-comment textarea.form-control {
+    resize: vertical;
+    border-radius: 6px;
+}
+
+.add-comment button.btn {
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* Comments List */
+.comment-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.comment-item .avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.comment-content h6 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.comment-content p {
+    margin: 3px 0 0 0;
+    font-size: 14px;
+    color: #495057;
+}
+
+.comment-content span {
+    font-size: 12px;
+    color: #868e96;
+}
+
+/* Responsive ayarlar */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+
+    .comment-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .comment-item .avatar {
+        margin-bottom: 5px;
+    }
+}

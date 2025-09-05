@@ -15,5 +15,7 @@ namespace BlogApp.Data.Abstract
         public Task<List<Post>> GetSomePostsAsync(int count = 5, int skip = 0);
 
         public Task<Post> AddPostAsync(CreateViewModel model, int userId);
+        public Task<Post> EditPostAsync(Post post, CreateViewModel model);
+        public Task DeletePostAsync(Post post);
     }
 }
